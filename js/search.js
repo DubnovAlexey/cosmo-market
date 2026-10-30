@@ -14,7 +14,7 @@ const search = function () {
 
             goodBlock.innerHTML = `
             <div class="goods-card">
-                <span class="label ${good.label ? null : 'd-none'}">${good.label}</span>
+                <span class="label ${good.label ? '' : 'd-none'}">${good.label}</span>
                 <img src="db/${good.img}" alt="${good.name}" class="goods-image">
                 <h3 class="goods-title">${good.name}</h3>
                 <p class="goods-description">${good.description}</p>
@@ -36,7 +36,7 @@ const search = function () {
                 localStorage.setItem('goods', JSON.stringify(array))
 
                 if (!window.location.pathname.includes("goods.html")) {
-                    window.location.href = '../goods.html';
+                    window.location.href = 'goods.html';
                 } else {
                     renderGoods(array)
                 }
@@ -45,7 +45,6 @@ const search = function () {
     }
 
     searchBtn.addEventListener(`click`, () => {
-        console.log();
         getData(input.value)
 
     })

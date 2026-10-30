@@ -1,0 +1,12 @@
+# Единые переводы строк: в репозитории всегда LF, на Windows Git сам показывает CRLF
+* text=auto
+
+# Картинки, шрифты и архивы — двоичные файлы, их Git не преобразует
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.zip binary

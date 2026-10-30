@@ -1,0 +1,13 @@
+# Общие правила оформления для всех редакторов (IntelliJ, WebStorm, VS Code)
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# В Markdown два пробела в конце строки означают перенос, их не убираем
+[*.md]
+trim_trailing_whitespace = false

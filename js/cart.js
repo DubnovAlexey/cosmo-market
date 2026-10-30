@@ -66,7 +66,6 @@ const cart = function () {
             JSON.parse(localStorage.getItem('cart')) : []
 
         if (cart.some(good => good.id === clikedGood.id)) {
-            console.log("yvel");
             cart.map((good) => {
                 if (good.id === clikedGood.id) {
                     good.count++
@@ -75,16 +74,19 @@ const cart = function () {
             })
 
         } else {
-            console.log("no");
             clikedGood.count = 1
             cart.push(clikedGood)
         }
 
         localStorage.setItem('cart', JSON.stringify(cart))
+        // Счётчик на кнопке корзины обновляем сразу, а не только после перезагрузки страницы
+        updateCartCount()
     }
 
     const renderCartGoods = (goods) => {
         cartTable.innerHTML = ''
+        // Плюс, минус и удаление перерисовывают корзину через эту функцию, поэтому счётчик обновляем здесь
+        updateCartCount()
 
         const totalPrice = goods.reduce((sum, good) => {
             return sum + (+good.price * +good.count)
