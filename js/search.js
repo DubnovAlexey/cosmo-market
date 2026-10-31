@@ -48,6 +48,13 @@ const search = function () {
         getData(input.value)
 
     })
+
+    // Поиск запускается и кнопкой, и клавишей Enter в поле ввода
+    input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            getData(input.value)
+        }
+    })
 }
 
 search()

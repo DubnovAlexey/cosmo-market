@@ -2,7 +2,6 @@ const cart = function () {
     const cartBtn = document.querySelector(".button-cart")
     const cart = document.getElementById(`modal-cart`)
     const closeBtn = cart.querySelector(".modal-close")
-    const goodsContainer = document.querySelector('.long-goods-list')
     const cartTable = document.querySelector('.cart-table__goods')
     const modalForm = document.querySelector('.modal-form')
     const cartCount = document.querySelector('.cart-count')
@@ -59,9 +58,19 @@ const cart = function () {
     }
 
 
-    const addToCart = (id) => {
-        const goods = JSON.parse(localStorage.getItem('goods'))
-        const clikedGood = goods.find(good => good.id === id)
+    const addToCart = async (id) => {
+        // Сначала ищем товар в последнем загруженном списке. На главной этого списка ещё нет,
+        // поэтому тогда берём товар из полного каталога.
+        const goods = JSON.parse(localStorage.getItem('goods')) || []
+        let clikedGood = goods.find(good => good.id === id)
+        if (!clikedGood) {
+            const response = await fetch('./db/db.json')
+            const catalog = await response.json()
+            clikedGood = catalog.find(good => good.id === id)
+        }
+        if (!clikedGood) {
+            return
+        }
         const cart = localStorage.getItem('cart') ?
             JSON.parse(localStorage.getItem('cart')) : []
 
@@ -129,9 +138,6 @@ const cart = function () {
                 }
             })
         })
-        if (cartTotal) {
-            cartTotal.textContent = formatPrice(totalCents / 100)
-        }
     }
 
     const sendForm = () => {
@@ -187,16 +193,13 @@ const cart = function () {
         }
     })
 
-    if (goodsContainer) {
-        goodsContainer.addEventListener("click", (event) => {
-            if (event.target.closest('.add-to-cart')) {
-                const buttonToCart = event.target.closest('.add-to-cart')
-                const goodId = buttonToCart.dataset.id
-
-                addToCart(goodId)
-            }
-        })
-    }
+    // Кнопки «в корзину» есть и на главной, и в каталоге, поэтому слушаем клики на всём документе
+    document.addEventListener('click', (event) => {
+        const buttonToCart = event.target.closest('.add-to-cart')
+        if (buttonToCart) {
+            addToCart(buttonToCart.dataset.id)
+        }
+    })
     updateCartCount()
 
 }
