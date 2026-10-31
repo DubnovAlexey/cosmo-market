@@ -88,19 +88,20 @@ const cart = function () {
         // Плюс, минус и удаление перерисовывают корзину через эту функцию, поэтому счётчик обновляем здесь
         updateCartCount()
 
-        const totalPrice = goods.reduce((sum, good) => {
-            return sum + (+good.price * +good.count)
+        // Считаем в центах, чтобы не накапливать ошибки округления
+        const totalCents = goods.reduce((sum, good) => {
+            return sum + Math.round(Number(good.price) * 100) * Number(good.count)
         }, 0)
 
         if (cartTotal) {
-            cartTotal.textContent = totalPrice + '$'
+            cartTotal.textContent = formatPrice(totalCents / 100)
         }
 
         goods.forEach(good => {
             const tr = document.createElement('tr')
             tr.innerHTML = `
                <td>${good.name}</td>
-                <td>${good.price}</td>
+                <td>${formatPrice(good.price)}</td>
                 <td>
                     <button class="cart-btn-minus">-</button>
                 </td>
@@ -108,7 +109,7 @@ const cart = function () {
                 <td>
                     <button class=" cart-btn-plus">+</button>
                 </td>
-                <td>${+good.price * +good.count}</td>
+                <td>${formatPrice(Math.round(Number(good.price) * 100) * Number(good.count) / 100)}</td>
                 <td>
                     <button class="cart-btn-delete">x</button>
                 </td>
@@ -129,7 +130,7 @@ const cart = function () {
             })
         })
         if (cartTotal) {
-            cartTotal.textContent = totalPrice + '$'
+            cartTotal.textContent = formatPrice(totalCents / 100)
         }
     }
 
