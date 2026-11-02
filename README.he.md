@@ -36,6 +36,10 @@ HTML5 · CSS3 · JavaScript (ES2015+) · Fetch API · localStorage · Bootstrap 
 - ב-IntelliJ IDEA או ב-WebStorm: לחיצה ימנית על `index.html` ← **Open In** ← **Browser**;
 - או בטרמינל: להריץ `npx serve .` ולפתוח את הכתובת שמופיעה.
 
+## בדיקות
+
+חוקי העגלה הם פונקציות טהורות ב-`js/cart-logic.js`, והם נבדקים בבדיקות יחידה ב-`tests/cart-logic.test.js` (`npm install`, ואז `npm test`). GitHub Actions מריץ אותן בכל push.
+
 ## תוכניות להמשך
 
 - הפעלת הסליידר בדף הבית (חיבור Swiper).

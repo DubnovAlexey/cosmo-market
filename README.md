@@ -36,6 +36,17 @@ The catalog is loaded with `fetch`, so open the page through a local web server,
 - in IntelliJ IDEA or WebStorm: right-click `index.html` → **Open In** → **Browser**;
 - or in a terminal: run `npx serve .` and open the address it prints.
 
+## Tests
+
+The cart rules live in pure functions in `js/cart-logic.js` (add, plus, minus, remove, piece count, totals in cents). They are covered by unit tests in `tests/cart-logic.test.js`:
+
+```bash
+npm install
+npm test
+```
+
+GitHub Actions runs the same tests on every push (`.github/workflows/test.yml`). The site itself still needs no build step.
+
 ## Roadmap
 
 - Make the slider on the home page work (connect Swiper).

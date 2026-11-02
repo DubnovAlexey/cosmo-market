@@ -33,7 +33,7 @@ const getGoods = () => {
             .then((data) => {
                 const array = category ? data.filter((item) => item[category] === value) : data
 
-                localStorage.setItem('goods', JSON.stringify(array))
+                localStorage.setItem(CartLogic.KEYS.goods, JSON.stringify(array))
                 if (!window.location.pathname.includes("goods.html")) {
                     window.location.href = 'goods.html';
                 } else {
@@ -54,8 +54,8 @@ const getGoods = () => {
     })
 
 
-    if (localStorage.getItem('goods') && window.location.pathname.includes("goods.html")) {
-        renderGoods(JSON.parse(localStorage.getItem('goods')));
+    if (localStorage.getItem(CartLogic.KEYS.goods) && window.location.pathname.includes("goods.html")) {
+        renderGoods(JSON.parse(localStorage.getItem(CartLogic.KEYS.goods)));
     }
 
     if (more) {

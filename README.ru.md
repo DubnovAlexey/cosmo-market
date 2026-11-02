@@ -36,6 +36,17 @@ HTML5 · CSS3 · JavaScript (ES2015+) · Fetch API · localStorage · Bootstrap 
 - в IntelliJ IDEA или WebStorm: правый клик по `index.html` → **Open In** → **Browser**;
 - или в терминале: выполнить `npx serve .` и открыть адрес, который он покажет.
 
+## Тесты
+
+Правила корзины — чистые функции в `js/cart-logic.js` (добавить, плюс, минус, удалить, число штук, суммы в центах). Их проверяют юнит-тесты `tests/cart-logic.test.js`:
+
+```bash
+npm install
+npm test
+```
+
+GitHub Actions запускает те же тесты при каждом пуше (`.github/workflows/test.yml`). Самому сайту сборка по-прежнему не нужна.
+
 ## Планы
 
 - Включить слайдер на главной (подключить Swiper).

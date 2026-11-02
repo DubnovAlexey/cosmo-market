@@ -33,7 +33,7 @@ const search = function () {
             .then((data) => {
                 const array = data.filter(good => good.name.toLowerCase().includes(value.toLowerCase()))
 
-                localStorage.setItem('goods', JSON.stringify(array))
+                localStorage.setItem(CartLogic.KEYS.goods, JSON.stringify(array))
 
                 if (!window.location.pathname.includes("goods.html")) {
                     window.location.href = 'goods.html';

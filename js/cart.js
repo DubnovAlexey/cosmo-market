@@ -7,61 +7,43 @@ const cart = function () {
     const cartCount = document.querySelector('.cart-count')
     const cartTotal = document.querySelector('.card-table__total')
 
+    // Корзина хранится в localStorage; расчёты — в чистых функциях CartLogic (js/cart-logic.js)
+    const loadCart = () => {
+        try {
+            const saved = JSON.parse(localStorage.getItem(CartLogic.KEYS.cart))
+            return Array.isArray(saved) ? saved : []
+        } catch {
+            return []
+        }
+    }
+
+    const saveCart = (cartArray) => {
+        localStorage.setItem(CartLogic.KEYS.cart, JSON.stringify(cartArray))
+    }
+
     const updateCartCount = () => {
-        const cartArray = localStorage.getItem('cart') ?
-            JSON.parse(localStorage.getItem('cart')) : []
-        const totalCount = cartArray.reduce((sum, item) => sum + item.count, 0)
+        const totalCount = CartLogic.count(loadCart())
         if (cartCount) {
             cartCount.textContent = totalCount > 0 ? totalCount : ''
         }
     }
 
-    const deleteCartItem = (id) => {
-        const cart = JSON.parse(localStorage.getItem('cart'))
-
-        const newCart = cart.filter(good => {
-            return good.id !== id
-        })
-
-        localStorage.setItem('cart', JSON.stringify(newCart))
-        renderCartGoods(JSON.parse(localStorage.getItem('cart')))
+    // Изменить корзину, сохранить и перерисовать
+    const changeCart = (change) => {
+        const newCart = change(loadCart())
+        saveCart(newCart)
+        renderCartGoods(newCart)
     }
 
-    const plusCartItem = (id) => {
-        const cart = JSON.parse(localStorage.getItem('cart'))
-
-        const newCart = cart.map((good) => {
-            if (good.id === id) {
-                good.count++
-            }
-            return good
-        })
-
-        localStorage.setItem('cart', JSON.stringify(newCart))
-        renderCartGoods(JSON.parse(localStorage.getItem('cart')))
-    }
-
-    const minusCartItem = (id) => {
-        const cart = JSON.parse(localStorage.getItem('cart'))
-
-        const newCart = cart.map((good) => {
-            if (good.id === id) {
-                if (good.count > 0) {
-                    good.count--
-                }
-            }
-            return good
-        }).filter(good => good.count > 0)
-
-        localStorage.setItem('cart', JSON.stringify(newCart))
-        renderCartGoods(JSON.parse(localStorage.getItem('cart')))
-    }
+    const deleteCartItem = (id) => changeCart(cartArray => CartLogic.remove(cartArray, id))
+    const plusCartItem = (id) => changeCart(cartArray => CartLogic.plus(cartArray, id))
+    const minusCartItem = (id) => changeCart(cartArray => CartLogic.minus(cartArray, id))
 
 
     const addToCart = async (id) => {
         // Сначала ищем товар в последнем загруженном списке. На главной этого списка ещё нет,
         // поэтому тогда берём товар из полного каталога.
-        const goods = JSON.parse(localStorage.getItem('goods')) || []
+        const goods = JSON.parse(localStorage.getItem(CartLogic.KEYS.goods)) || []
         let clikedGood = goods.find(good => good.id === id)
         if (!clikedGood) {
             const response = await fetch('./db/db.json')
@@ -71,58 +53,46 @@ const cart = function () {
         if (!clikedGood) {
             return
         }
-        const cart = localStorage.getItem('cart') ?
-            JSON.parse(localStorage.getItem('cart')) : []
 
-        if (cart.some(good => good.id === clikedGood.id)) {
-            cart.map((good) => {
-                if (good.id === clikedGood.id) {
-                    good.count++
-                }
-                return good
-            })
-
-        } else {
-            clikedGood.count = 1
-            cart.push(clikedGood)
-        }
-
-        localStorage.setItem('cart', JSON.stringify(cart))
+        saveCart(CartLogic.add(loadCart(), clikedGood))
         // Счётчик на кнопке корзины обновляем сразу, а не только после перезагрузки страницы
         updateCartCount()
     }
 
+    // Ячейка таблицы: текст — через textContent, кнопка — по классу
+    const cell = (text, buttonClass) => {
+        const td = document.createElement('td')
+        if (buttonClass) {
+            const button = document.createElement('button')
+            button.className = buttonClass
+            button.textContent = text
+            td.append(button)
+        } else {
+            td.textContent = text
+        }
+        return td
+    }
+
     const renderCartGoods = (goods) => {
-        cartTable.innerHTML = ''
+        cartTable.replaceChildren()
         // Плюс, минус и удаление перерисовывают корзину через эту функцию, поэтому счётчик обновляем здесь
         updateCartCount()
 
-        // Считаем в центах, чтобы не накапливать ошибки округления
-        const totalCents = goods.reduce((sum, good) => {
-            return sum + Math.round(Number(good.price) * 100) * Number(good.count)
-        }, 0)
-
         if (cartTotal) {
-            cartTotal.textContent = formatPrice(totalCents / 100)
+            cartTotal.textContent = formatPrice(CartLogic.totalCents(goods) / 100)
         }
 
         goods.forEach(good => {
             const tr = document.createElement('tr')
-            tr.innerHTML = `
-               <td>${good.name}</td>
-                <td>${formatPrice(good.price)}</td>
-                <td>
-                    <button class="cart-btn-minus">-</button>
-                </td>
-                <td>${good.count}</td>
-                <td>
-                    <button class=" cart-btn-plus">+</button>
-                </td>
-                <td>${formatPrice(Math.round(Number(good.price) * 100) * Number(good.count) / 100)}</td>
-                <td>
-                    <button class="cart-btn-delete">x</button>
-                </td>
-              `
+            tr.append(
+                cell(good.name),
+                cell(formatPrice(good.price)),
+                cell('-', 'cart-btn-minus'),
+                cell(good.count),
+                cell('+', 'cart-btn-plus'),
+                cell(formatPrice(CartLogic.lineCents(good) / 100)),
+                cell('x', 'cart-btn-delete')
+            )
             cartTable.append(tr)
 
             tr.addEventListener('click', (e) => {
@@ -141,8 +111,7 @@ const cart = function () {
     }
 
     const sendForm = () => {
-        const cartArray = localStorage.getItem('cart') ?
-            JSON.parse(localStorage.getItem('cart')) : []
+        const cartArray = loadCart()
 
         const nameInput = modalForm.querySelector('[name="nameCustomer"]')
         const phoneInput = modalForm.querySelector('[name="phoneCustomer"]')
@@ -156,7 +125,7 @@ const cart = function () {
             })
         }).then(() => {
             modalForm.reset()
-            localStorage.removeItem('cart')
+            localStorage.removeItem(CartLogic.KEYS.cart)
             updateCartCount()
             cart.style.display = ``
             alert('Спасибо за заказ!')
@@ -171,9 +140,7 @@ const cart = function () {
 
 
     cartBtn.addEventListener("click", function () {
-        const cartArray = localStorage.getItem('cart') ?
-            JSON.parse(localStorage.getItem('cart')) : []
-        renderCartGoods(cartArray)
+        renderCartGoods(loadCart())
         cart.style.display = `flex`
     })
 

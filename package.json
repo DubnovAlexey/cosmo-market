@@ -1,0 +1,11 @@
+{
+  "name": "cosmo-market",
+  "private": true,
+  "description": "Cosmo Market — a small online store in plain JavaScript",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.5"
+  }
+}
