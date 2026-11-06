@@ -385,10 +385,10 @@
 			</table>
 			<form class="modal-form" action="">
 				<label>
-					<input class="modal-input" type="text" placeholder="Имя" name="nameCustomer">
+					<input class="modal-input" type="text" placeholder="Имя" name="nameCustomer" required maxlength="100" autocomplete="name">
 				</label>
 				<label>
-					<input class="modal-input" type="text" placeholder="Телефон" name="phoneCustomer">
+					<input class="modal-input" type="tel" placeholder="Телефон" name="phoneCustomer" required maxlength="40" autocomplete="tel">
 				</label>
 				<button class="button cart-buy" type="submit">
 					<span class="button-text">Checkout</span>

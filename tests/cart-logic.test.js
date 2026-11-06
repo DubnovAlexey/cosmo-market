@@ -46,3 +46,14 @@ describe('CartLogic', () => {
         expect(CartLogic.KEYS.goods).toBe('cosmo-market:goods')
     })
 })
+
+// Повреждённые/старые значения localStorage не должны ломать витрину и сумму.
+describe('CartLogic storage recovery', () => {
+    it('normalizes legacy numeric strings and discards invalid rows', () => {
+        const cart = CartLogic.restore([null, {id:'a',name:'A',price:'1.5',count:'2'}, {id:'b',name:'B',price:'bad',count:1}, {id:'c',name:'C',price:5,count:-1}])
+        expect(cart).toHaveLength(1)
+        expect(CartLogic.count(cart)).toBe(2)
+        expect(CartLogic.totalCents(cart)).toBe(300)
+    })
+    it('rejects a non-array saved value', () => { expect(CartLogic.restore({count:3})).toEqual([]) })
+})

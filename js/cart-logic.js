@@ -7,6 +7,15 @@ const CartLogic = {
         goods: 'cosmo-market:goods'
     },
 
+    // Восстановление старого/повреждённого хранилища: только валидные строки корзины.
+    restore(value) {
+        if (!Array.isArray(value)) return []
+        return value.filter(item => item && (typeof item.id === 'string' || typeof item.id === 'number') &&
+            typeof item.name === 'string' && Number.isFinite(Number(item.price)) && Number(item.price) >= 0 &&
+            Number.isSafeInteger(Number(item.count)) && Number(item.count) > 0)
+            .map(item => ({...item, count: Number(item.count)}))
+    },
+
     // Добавить товар: если он уже в корзине — +1 к количеству, иначе новая строка с количеством 1
     add(cart, good) {
         if (cart.some(item => item.id === good.id)) {

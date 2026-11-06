@@ -8,17 +8,20 @@ const cart = function () {
     const cartTotal = document.querySelector('.card-table__total')
 
     // Корзина хранится в localStorage; расчёты — в чистых функциях CartLogic (js/cart-logic.js)
+    let volatileCart = null // При недоступном хранилище корзина работает до закрытия страницы.
     const loadCart = () => {
+        if (volatileCart !== null) return volatileCart
         try {
             const saved = JSON.parse(localStorage.getItem(CartLogic.KEYS.cart))
-            return Array.isArray(saved) ? saved : []
+            return CartLogic.restore(saved)
         } catch {
             return []
         }
     }
 
     const saveCart = (cartArray) => {
-        localStorage.setItem(CartLogic.KEYS.cart, JSON.stringify(cartArray))
+        try { localStorage.setItem(CartLogic.KEYS.cart, JSON.stringify(cartArray)); volatileCart = null }
+        catch { volatileCart = cartArray }
     }
 
     const updateCartCount = () => {
@@ -43,12 +46,15 @@ const cart = function () {
     const addToCart = async (id) => {
         // Сначала ищем товар в последнем загруженном списке. На главной этого списка ещё нет,
         // поэтому тогда берём товар из полного каталога.
-        const goods = JSON.parse(localStorage.getItem(CartLogic.KEYS.goods)) || []
-        let clikedGood = goods.find(good => good.id === id)
+        let goods = []
+        try { const saved = JSON.parse(localStorage.getItem(CartLogic.KEYS.goods)); if (Array.isArray(saved)) goods = saved }
+        catch { /* Повреждённый кэш не мешает загрузить исходный каталог. */ }
+        let clikedGood = goods.find(good => good && String(good.id) === String(id))
         if (!clikedGood) {
             const response = await fetch('./db/db.json')
+            if (!response.ok) throw new Error('Каталог недоступен')
             const catalog = await response.json()
-            clikedGood = catalog.find(good => good.id === id)
+            clikedGood = catalog.find(good => String(good.id) === String(id))
         }
         if (!clikedGood) {
             return
@@ -110,26 +116,11 @@ const cart = function () {
         })
     }
 
+    // Демо-магазин не имеет сервера заказов: персональные поля никуда не передаются.
     const sendForm = () => {
-        const cartArray = loadCart()
-
-        const nameInput = modalForm.querySelector('[name="nameCustomer"]')
-        const phoneInput = modalForm.querySelector('[name="phoneCustomer"]')
-
-        fetch('https://jsonplaceholder.typicode.com/posts', {
-            method: 'POST',
-            body: JSON.stringify({
-                cart: cartArray,
-                name: nameInput ? nameInput.value.trim() : '',
-                phone: phoneInput ? phoneInput.value.trim() : ''
-            })
-        }).then(() => {
-            modalForm.reset()
-            localStorage.removeItem(CartLogic.KEYS.cart)
-            updateCartCount()
-            cart.style.display = ``
-            alert('Спасибо за заказ!')
-        })
+        if (!modalForm.reportValidity()) return
+        if (!loadCart().length) { alert('Добавьте товары в корзину.'); return }
+        alert('Демонстрационный заказ проверен. Данные никуда не отправлены; корзина сохранена.')
     }
 
     modalForm.addEventListener('submit', (e) => {
@@ -164,7 +155,7 @@ const cart = function () {
     document.addEventListener('click', (event) => {
         const buttonToCart = event.target.closest('.add-to-cart')
         if (buttonToCart) {
-            addToCart(buttonToCart.dataset.id)
+            addToCart(buttonToCart.dataset.id).catch(() => alert('Не удалось загрузить товар. Попробуйте ещё раз.'))
         }
     })
     updateCartCount()

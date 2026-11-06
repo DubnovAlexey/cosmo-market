@@ -15,7 +15,7 @@ A small online store written in plain JavaScript. It has a product catalog with 
 - Search by product name.
 - Shopping cart: add items, change the quantity, remove items. The cart is stored in `localStorage`, so it survives a page reload.
 - The total price and the counter on the cart button update immediately.
-- An order form with name and phone. The order is sent to a test API (JSONPlaceholder). After sending, the form and the cart are cleared.
+- An order form with required name and phone fields. This is a local demonstration: personal data is not transmitted and the cart remains available.
 - A responsive layout based on the Bootstrap grid.
 
 ## Tech stack
@@ -26,7 +26,7 @@ HTML5 · CSS3 · JavaScript (ES2015+) · Fetch API · localStorage · Bootstrap 
 
 - Rendering a catalog from data with array methods: `filter`, `find`, `map`, `reduce`.
 - Keeping state between two pages with `localStorage`.
-- Sending form data with `fetch` (POST) and handling the response.
+- Validating a demonstration order without transmitting personal fields to a third-party test service.
 - Event handling and DOM updates without frameworks.
 
 ## Run locally
@@ -51,7 +51,7 @@ GitHub Actions runs the same tests on every push (`.github/workflows/test.yml`).
 
 - Make the slider on the home page work (connect Swiper).
 - A product details window and sorting by price.
-- Validation of the name and phone fields.
+- A real order backend with explicit consent and delivery status.
 - The interface in four languages: English, Hebrew (right to left), Russian and Spanish.
 
 ## Credits
