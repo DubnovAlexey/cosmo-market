@@ -1,6 +1,8 @@
+<!--suppress MarkdownUnresolvedFileReference -->
+
 # Cosmo Market
 
-[English](#english) · [Русский](#russian) · [עברית](#hebrew)
+[English](#english) · [Русский](#russian) · [עברית](#hebrew) · [Español](#spanish) · [Français](#french)
 
 <a name="english"></a>
 
@@ -203,3 +205,141 @@ HTML5 · CSS3 · JavaScript (ES2015+) · Fetch API · localStorage · Bootstrap 
 - גופנים: Lato ו-Roboto Slab (Google Fonts).
 
 </div>
+
+---
+
+<a name="spanish"></a>
+
+## Español
+
+Una pequeña tienda en línea en JavaScript puro. Tiene un catálogo de productos con categorías y búsqueda, un carrito que se conserva al recargar la página y un formulario de pedido.
+
+**Demo:** https://dubnovalexey.github.io/cosmo-market/
+
+### Recorrido rápido
+
+Abra el catálogo, elija una categoría o use la búsqueda, añada un producto y vaya al carrito. Cambie la cantidad y recargue la página para comprobar que se guarda. El pedido es una demostración local que no envía nada.
+
+![Página principal de Cosmo Market](docs/screenshot.jpg)
+
+### Funciones
+
+- El catálogo se carga desde `db/db.json` con la Fetch API.
+- Menú de categorías (Womens, Mens, Clothing, Accessories, Shoes, All) y botón **View All**.
+- Búsqueda por nombre de producto.
+- Carrito: añadir, cambiar la cantidad, quitar. El carrito se guarda en `localStorage` y no desaparece al recargar la página.
+- El total y el contador del botón del carrito se actualizan al instante.
+- Formulario de pedido con nombre y teléfono obligatorios. Es una demo local: los datos personales no se envían a ningún sitio y el carrito se conserva.
+- Maquetación adaptable con la rejilla de Bootstrap.
+
+### Tecnologías
+
+HTML5 · CSS3 · JavaScript (ES2015+) · Fetch API · localStorage · Bootstrap Grid · GitHub Pages
+
+### Decisiones técnicas
+
+- Catálogo generado a partir de datos con métodos de arrays: `filter`, `find`, `map`, `reduce`.
+- Estado compartido entre dos páginas mediante `localStorage`.
+- Validación del pedido de demostración sin enviar datos personales a un servicio de pruebas externo.
+- Gestión de eventos y actualización del DOM sin frameworks.
+
+### Cómo ejecutarlo
+
+El catálogo se carga con `fetch`, así que la página debe abrirse mediante un servidor local, no como archivo:
+
+- en IntelliJ IDEA o WebStorm: clic derecho en `index.html` → **Open In** → **Browser**;
+- o en la terminal: ejecutar `npx serve .` y abrir la dirección que muestre.
+
+### Pruebas
+
+Las reglas del carrito son funciones puras en `js/cart-logic.js` (añadir, más, menos, quitar, número de unidades, sumas en céntimos). Las comprueban las pruebas unitarias `tests/cart-logic.test.js`:
+
+```bash
+npm install
+npm test
+```
+
+GitHub Actions ejecuta las mismas pruebas en cada push (`.github/workflows/test.yml`). El sitio en sí sigue sin necesitar compilación.
+
+### Planes
+
+Los puntos siguientes son planes, no funciones implementadas.
+
+- **Visual:** mejorar los estados de catálogo vacío y de carga y la uniformidad de las fotos; al traducir la tienda, añadir nombres de idioma en texto y maquetación RTL.
+- **Ingeniería:** separar el estado del catálogo del renderizado del DOM, ampliar las comprobaciones de errores de almacenamiento y de API y definir el contrato del servidor de pedidos antes de conectarlo.
+- **Funciones:** añadir la ficha del producto y la ordenación por precio, y después activar el carrusel de la portada; los pedidos reales son una etapa aparte con servidor.
+
+### Agradecimientos
+
+- La maqueta se basa en una plantilla de prácticas de un curso de JavaScript. La lógica en JavaScript la escribí yo.
+- Los datos y las fotos de los productos son material de demostración del curso y se usan solo con fines de estudio.
+- Fuentes: Lato y Roboto Slab (Google Fonts).
+
+---
+
+<a name="french"></a>
+
+## Français
+
+Une petite boutique en ligne en JavaScript pur. Elle comprend un catalogue de produits avec catégories et recherche, un panier conservé après le rechargement de la page et un formulaire de commande.
+
+**Démo :** https://dubnovalexey.github.io/cosmo-market/
+
+### Visite rapide
+
+Ouvrez le catalogue, choisissez une catégorie ou lancez une recherche, ajoutez un produit et allez au panier. Changez la quantité et rechargez la page pour vérifier la sauvegarde. La commande est une démonstration locale qui n'envoie rien.
+
+![Page d'accueil de Cosmo Market](docs/screenshot.jpg)
+
+### Fonctions
+
+- Le catalogue se charge depuis `db/db.json` avec la Fetch API.
+- Menu des catégories (Womens, Mens, Clothing, Accessories, Shoes, All) et bouton **View All**.
+- Recherche par nom de produit.
+- Panier : ajouter, changer la quantité, supprimer. Le panier est gardé dans `localStorage` et ne disparaît pas au rechargement de la page.
+- Le total et le compteur du bouton du panier se mettent à jour immédiatement.
+- Formulaire de commande avec nom et téléphone obligatoires. C'est une démo locale : les données personnelles ne partent nulle part, le panier est conservé.
+- Mise en page adaptative sur la grille Bootstrap.
+
+### Technologies
+
+HTML5 · CSS3 · JavaScript (ES2015+) · Fetch API · localStorage · Bootstrap Grid · GitHub Pages
+
+### Choix techniques
+
+- Catalogue rendu à partir des données avec les méthodes de tableaux : `filter`, `find`, `map`, `reduce`.
+- État partagé entre deux pages via `localStorage`.
+- Validation de la commande de démonstration sans transmettre de données personnelles à un service de test externe.
+- Gestion des événements et mise à jour du DOM sans framework.
+
+### Lancer le projet
+
+Le catalogue se charge avec `fetch` : il faut donc ouvrir la page via un serveur local, et non comme un fichier :
+
+- dans IntelliJ IDEA ou WebStorm : clic droit sur `index.html` → **Open In** → **Browser** ;
+- ou dans le terminal : lancer `npx serve .` et ouvrir l'adresse qu'il affiche.
+
+### Tests
+
+Les règles du panier sont des fonctions pures dans `js/cart-logic.js` (ajouter, plus, moins, supprimer, nombre d'articles, sommes en centimes). Elles sont vérifiées par les tests unitaires `tests/cart-logic.test.js` :
+
+```bash
+npm install
+npm test
+```
+
+GitHub Actions lance les mêmes tests à chaque push (`.github/workflows/test.yml`). Le site lui-même n'a toujours pas besoin de compilation.
+
+### Projets
+
+Les points suivants sont des projets, pas des fonctions réalisées.
+
+- **Visuel :** améliorer les états de catalogue vide et de chargement et l'homogénéité des photos ; lors de la traduction de la boutique, ajouter des noms de langue en texte et la mise en page RTL.
+- **Ingénierie :** séparer l'état du catalogue du rendu DOM, étendre les vérifications d'erreurs de stockage et d'API et définir le contrat du serveur de commandes avant de le brancher.
+- **Fonctions :** ajouter la fiche produit et le tri par prix, puis activer le carrousel de l'accueil ; les vraies commandes sont une étape serveur à part.
+
+### Remerciements
+
+- La mise en page s'appuie sur une maquette d'exercice d'un cours de JavaScript. La logique JavaScript est de moi.
+- Les données et les photos des produits sont des supports de démonstration du cours, utilisés uniquement à des fins d'apprentissage.
+- Polices : Lato et Roboto Slab (Google Fonts).
