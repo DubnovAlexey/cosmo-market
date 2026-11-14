@@ -146,6 +146,13 @@ const marketCatalog = (() => {
     }
     const more = document.querySelector('.more')
     if (more) more.addEventListener('click', event => { event.preventDefault(); show() })
+    // «View all» в карточках скидок ведёт в каталог своей категории (14.11: кнопки были без обработчика —
+    // нашёл живой обход Кузницы)
+    for (const button of document.querySelectorAll('[data-catalog-field]')) {
+        const {catalogField: field, catalogValue: value} = button.dataset || {}
+        if (!field || !value) continue // только кнопки с категорией: обработчик не цепляется к чужим элементам
+        button.addEventListener('click', () => show({field, value}))
+    }
     if (isCatalogPage()) {
         const filter = readFilter()
         load(filter, Object.keys(filter).length === 0)

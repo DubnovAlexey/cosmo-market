@@ -43,7 +43,7 @@ const cart = function () {
     const minusCartItem = (id) => changeCart(cartArray => CartLogic.minus(cartArray, id))
 
 
-    const addToCart = async (id) => {
+    const addToCart = async (id, button) => {
         // Сначала ищем товар в последнем загруженном списке. На главной этого списка ещё нет,
         // поэтому тогда берём товар из полного каталога.
         let goods = []
@@ -63,6 +63,8 @@ const cart = function () {
         saveCart(CartLogic.add(loadCart(), clikedGood))
         // Счётчик на кнопке корзины обновляем сразу, а не только после перезагрузки страницы
         updateCartCount()
+        // Видимый отклик рядом с нажатой кнопкой рисует cart-feedback.js (кнопка корзины в шапке может быть за экраном)
+        document.dispatchEvent(new CustomEvent('cosmo-market:added', { detail: { good: clikedGood, button } }))
     }
 
     // Ячейка таблицы: текст — через textContent, кнопка — по классу
@@ -155,7 +157,7 @@ const cart = function () {
     document.addEventListener('click', (event) => {
         const buttonToCart = event.target.closest('.add-to-cart')
         if (buttonToCart) {
-            addToCart(buttonToCart.dataset.id).catch(() => alert('Не удалось загрузить товар. Попробуйте ещё раз.'))
+            addToCart(buttonToCart.dataset.id, buttonToCart).catch(() => alert('Не удалось загрузить товар. Попробуйте ещё раз.'))
         }
     })
     updateCartCount()

@@ -279,6 +279,34 @@ button {
     height: 190px;
 }
 
+/* Фото товара под мышью: крупная копия поверх страницы (js/hover-zoom.js) — целиком, на белом, со скруглением
+   и синей каймой, как у кнопок магазина. Копия не ловит мышь: кнопка «в корзину» под ней работает как раньше. */
+.zoom-peek {
+    position: fixed;
+    z-index: 2000;
+    pointer-events: none;
+    transform-origin: 0 0;
+    background: #fff;
+    border: 12px solid #fff;
+    border-radius: 20px;
+    box-shadow: 0 0 0 2px #3775CC, 0 24px 60px rgba(38, 45, 51, 0.35);
+    transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.25, 1), opacity 0.24s ease;
+}
+
+.zoom-peek img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .zoom-peek {
+        transition: none;
+    }
+}
+
 .goods-description {
     color: #4B5157;
     font-size: 14px;

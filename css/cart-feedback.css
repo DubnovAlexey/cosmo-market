@@ -1,0 +1,101 @@
+/* Отклик корзины (14.11): шапка с кнопкой корзины не закреплена, и при нажатии цены внизу страницы казалось,
+   что ничего не происходит. Теперь: кнопка цены на миг пишет «✓ Added», внизу всплывает строка с товаром
+   и кнопкой «Open cart», а когда кнопка корзины в шапке ушла за экран — в углу висит своя, со счётчиком. */
+
+.add-to-cart.is-added {
+    background: #2d8a4e;
+    transition: background .2s ease;
+}
+
+.cart-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: calc(100vw - 32px);
+    padding: 12px 14px 12px 20px;
+    border-radius: 22px;
+    background: #1f2a3d;
+    color: #fff;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .3);
+    transform: translate(-50%, 140%);
+    opacity: 0;
+    transition: transform .3s cubic-bezier(.2, .8, .3, 1), opacity .25s ease;
+}
+
+.cart-toast.is-shown {
+    transform: translate(-50%, 0);
+    opacity: 1;
+}
+
+.cart-toast__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cart-toast .button {
+    flex-shrink: 0;
+    padding: 6px 16px;
+}
+
+/* Своя кнопка корзины в углу — только пока кнопка в шапке за экраном */
+.cart-float {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1090;
+    gap: 6px;
+    min-height: 48px;
+    padding: 12px 18px;
+    box-shadow: 0 10px 26px rgba(55, 117, 204, .45);
+    transform: scale(.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .25s ease, opacity .2s ease;
+}
+
+.cart-float.is-shown {
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.cart-float.is-bumped {
+    animation: cart-bump .45s ease;
+}
+
+@keyframes cart-bump {
+    35% { transform: scale(1.18); }
+}
+
+/* Строка внизу не прячет плавающую кнопку на телефоне */
+@media (max-width: 575px) {
+    .cart-toast {
+        left: 16px;
+        right: 88px;
+        transform: translateY(140%);
+    }
+
+    .cart-toast.is-shown {
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cart-toast,
+    .cart-float,
+    .add-to-cart.is-added {
+        transition: none;
+    }
+
+    .cart-float.is-bumped {
+        animation: none;
+    }
+}
